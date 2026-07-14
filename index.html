@@ -83,7 +83,7 @@
                     LOADING PORTFOLIO...
                 </div>
                 <button id="config-btn" class="text-[10px] font-semibold tracking-[0.2em] uppercase text-white hover:text-gray-400 transition duration-300 flex items-center gap-2" title="Configure System Protocol">
-                    <span>Credentials</span>
+                    <span>Groq Settings</span>
                     <span class="text-xs">⚙️</span>
                 </button>
             </div>
@@ -100,9 +100,9 @@
     <!-- Configuration Modal Interface -->
     <div id="setup-modal" class="fixed inset-0 bg-black/90 backdrop-blur-lg hidden flex items-center justify-center p-4 z-50">
         <div class="bg-vogueBlack rounded-none max-w-md w-full p-8 border border-white/20 shadow-2xl">
-            <h3 class="text-xl font-serif tracking-wider mb-2 text-white text-center">Google AI Studio Profile</h3>
-            <p class="text-xs text-gray-400 mb-6 leading-relaxed text-center font-light">Enter your private verification token. The structural layer executes calculations exclusively in memory storage.</p>
-            <input type="password" id="api-key-input" placeholder="ENTER API KEY HERE" class="w-full p-3 rounded-none bg-zinc-900 border border-white/10 text-white font-mono tracking-widest focus:outline-none focus:border-white mb-6 text-xs text-center uppercase">
+            <h3 class="text-xl font-serif tracking-wider mb-2 text-white text-center">Groq API Profile</h3>
+            <p class="text-xs text-gray-400 mb-6 leading-relaxed text-center font-light">Enter your private Groq authorization token. The structural layer executes calculations exclusively in memory storage.</p>
+            <input type="password" id="api-key-input" placeholder="gsk_..." class="w-full p-3 rounded-none bg-zinc-900 border border-white/10 text-white font-mono tracking-widest focus:outline-none focus:border-white mb-6 text-xs text-center">
             <div class="flex justify-center gap-4">
                 <button id="close-modal-btn" class="px-6 py-2.5 text-xs tracking-widest uppercase text-gray-400 hover:text-white transition font-light">Discard</button>
                 <button id="save-key-btn" class="px-6 py-2.5 bg-white text-black hover:bg-zinc-200 text-xs tracking-widest uppercase font-semibold transition">Authenticate</button>
@@ -112,7 +112,7 @@
 
     <!-- Application Architecture Core Script -->
     <script>
-        const AI_STUDIO_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+        const GROQ_API_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions";
         const CATEGORIES = [
             "Business", "Entrepreneurship", "Finance", "Economics", 
             "Corporate Innovation", "Leadership", "Marketing", "Future Enterprises"
@@ -139,7 +139,7 @@
             const modalElement = document.getElementById('setup-modal');
             if (shouldShow) {
                 modalElement.classList.remove('hidden');
-                const existingKey = localStorage.getItem('gemini_vogue_key');
+                const existingKey = localStorage.getItem('groq_magazine_key');
                 if (existingKey) document.getElementById('api-key-input').value = existingKey;
             } else {
                 modalElement.classList.add('hidden');
@@ -149,7 +149,7 @@
         function saveConfiguredToken() {
             const tokenInput = document.getElementById('api-key-input').value.trim();
             if (tokenInput) {
-                localStorage.setItem('gemini_vogue_key', tokenInput);
+                localStorage.setItem('groq_magazine_key', tokenInput);
                 localStorage.removeItem('cached_vogue_payload'); // Evict data caches
                 toggleSetupOverlay(false);
                 evaluateBriefingLifecycle();
@@ -169,7 +169,7 @@
         }
 
         async function invokeAutonomousAgentSync() {
-            const internalToken = localStorage.getItem('gemini_vogue_key');
+            const internalToken = localStorage.getItem('groq_magazine_key');
             if (!internalToken) {
                 displayMissingConfigurationState();
                 toggleSetupOverlay(true);
@@ -182,7 +182,7 @@
             Generate exactly 16 ultra-premium executive industry briefings. 
             Provide exactly 2 discrete articles for each of these 8 exact tracks: ${CATEGORIES.join(', ')}.
             
-            Return the content output strictly as a valid plain flat JSON array string. No markdown frames. Schema format:
+            Return the content output strictly as a raw minified valid JSON array string. No markdown frames, no backticks, no wrap text. Schema format:
             [
               {
                 "category": "Category Name",
@@ -194,20 +194,36 @@
             ]`;
 
             try {
-                const networkRequest = await fetch(`${AI_STUDIO_ENDPOINT}?key=${internalToken}`, {
+                const networkRequest = await fetch(GROQ_API_ENDPOINT, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${internalToken}`
+                    },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: synthesisPrompt }] }],
-                        generationConfig: { responseMimeType: "application/json" }
+                        model: "llama-3.3-70b-specdec",
+                        messages: [
+                            { role: "system", content: "You output raw minified plain JSON string matching schemas exactly. No prose wrap, no markdown fences." },
+                            { role: "user", content: synthesisPrompt }
+                        ],
+                        temperature: 0.3,
+                        response_format: { type: "json_object" }
                     })
                 });
 
                 if (!networkRequest.ok) throw new Error('API Sync Execution Aborted');
                 
                 const responseData = await networkRequest.json();
-                const sanitizedJsonText = responseData.candidates[0].content.parts[0].text;
-                const validatedPayload = JSON.parse(sanitizedJsonText);
+                let sanitizedJsonText = responseData.choices[0].message.content.trim();
+                
+                // Handle potential object wrapping if Groq nests the array inside an implicit parent object
+                let validatedPayload = JSON.parse(sanitizedJsonText);
+                if (!Array.isArray(validatedPayload) && validatedPayload.articles) {
+                    validatedPayload = validatedPayload.articles;
+                } else if (!Array.isArray(validatedPayload) && Object.values(validatedPayload)[0]) {
+                    const fallbackValue = Object.values(validatedPayload)[0];
+                    if (Array.isArray(fallbackValue)) validatedPayload = fallbackValue;
+                }
                 
                 localStorage.setItem('cached_vogue_payload', JSON.stringify(validatedPayload));
                 localStorage.setItem('cached_vogue_date', new Date().toDateString());
@@ -223,8 +239,12 @@
             const interfaceGrid = document.getElementById('magazine-grid');
             interfaceGrid.innerHTML = ''; 
 
+            if (!Array.isArray(articlesArray)) {
+                displayExecutionErrorState();
+                return;
+            }
+
             articlesArray.forEach(article => {
-                // Generate secure search telemetry route to make the item a fully functional deep intelligence hyperlink
                 const searchIntelQuery = encodeURIComponent(`${article.category} ${article.title}`);
                 const searchHyperlink = `https://www.google.com/search?q=${searchIntelQuery}`;
 
@@ -278,7 +298,7 @@
         function displayMissingConfigurationState() {
             document.getElementById('magazine-grid').innerHTML = `
                 <div class="col-span-full py-32 text-center border border-dashed border-zinc-800">
-                    <p class="text-xs font-light tracking-[0.3em] text-zinc-400 uppercase">AUTHENTICATION REQUIRED // PROVISION ENGINE TO COMPILE MAGAZINE PLATFORM</p>
+                    <p class="text-xs font-light tracking-[0.3em] text-zinc-400 uppercase">AUTHENTICATION REQUIRED // PROVISION GROQ ENGINE TO COMPILE PORTFOLIO</p>
                 </div>
             `;
         }
