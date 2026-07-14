@@ -79,10 +79,14 @@
                 <h1 class="text-3xl font-serif tracking-[0.15em] font-bold text-white">CONSOLIDATE</h1>
             </div>
             <div class="flex items-center gap-6">
+                <button id="pdf-btn" class="text-[10px] font-semibold tracking-[0.2em] uppercase text-white hover:text-gray-300 transition duration-300 flex items-center gap-2" title="Generate premium magazine PDF">
+                    <span>Export Magazine PDF</span>
+                    <span class="text-xs">📰</span>
+                </button>
                 <div id="date-badge" class="text-[10px] font-medium tracking-[0.2em] text-gray-400 font-sans border-r border-white/20 pr-6 uppercase">
                     LOADING PORTFOLIO...
                 </div>
-                <button id="config-btn" class="text-[10px] font-semibold tracking-[0.2em] uppercase text-white hover:text-gray-400 transition duration-300 flex items-center gap-2" title="Configure Groq API Token">
+                <button id="config-btn" class="text-[10px] font-semibold tracking-[0.2em] uppercase text-white hover:text-gray-400 transition duration-300 flex items-center gap-2" title="Configure Groq API key">
                     <span>Groq Settings</span>
                     <span class="text-xs">⚙️</span>
                 </button>
@@ -101,8 +105,8 @@
     <div id="setup-modal" class="fixed inset-0 bg-black/90 backdrop-blur-lg hidden flex items-center justify-center p-4 z-50">
         <div class="bg-vogueBlack rounded-none max-w-md w-full p-8 border border-white/20 shadow-2xl">
             <h3 class="text-xl font-serif tracking-wider mb-2 text-white text-center">Groq API Profile</h3>
-            <p class="text-xs text-gray-400 mb-6 leading-relaxed text-center font-light">Enter your private Groq authorization token. If unavailable or invalid, we will render a curated dummy portfolio.</p>
-            <input type="password" id="api-key-input" placeholder="gsk_..." class="w-full p-3 rounded-none bg-zinc-900 border border-white/10 text-white font-mono tracking-widest focus:outline-none focus:border-white/40 mb-6 text-sm">
+            <p class="text-xs text-gray-400 mb-6 leading-relaxed text-center font-light">Enter your private Groq authorization token. If unavailable or invalid, we will render a curated dummy portfolio experience.</p>
+            <input type="password" id="api-key-input" placeholder="gsk_..." class="w-full p-3 rounded-none bg-zinc-900 border border-white/10 text-white font-mono tracking-widest focus:outline-none focus:border-white/40 mb-6">
             <div class="flex justify-center gap-4">
                 <button id="close-modal-btn" class="px-6 py-2.5 text-xs tracking-widest uppercase text-gray-400 hover:text-white transition font-light">Discard</button>
                 <button id="save-key-btn" class="px-6 py-2.5 bg-white text-black hover:bg-zinc-200 text-xs tracking-widest uppercase font-semibold transition">Authenticate</button>
@@ -119,23 +123,27 @@
         ];
 
         const DUMMY_ARTICLES = [
-            { category: "Business", title: "Global Conglomerates Reprice Operating Playbooks", summary: "Boardrooms are redirecting capital from pure expansion to resilience architecture, prioritizing supply optionality and margin durability over short-cycle headline growth.", metric: "OPERATING MARGIN +2.1%", geography: "GLOBAL" },
-            { category: "Business", title: "Middle-Market Rollups Enter Precision Phase", summary: "Acquirers are shifting from scale-at-all-costs strategies to integration discipline, with diligence weighted toward data quality, retention economics, and execution velocity.", metric: "$3.8B DEAL PIPELINE", geography: "NEW YORK" },
-            { category: "Entrepreneurship", title: "Founder-Led Firms Extend Cash Runway Horizons", summary: "Early-stage operators are normalizing scenario-based planning and staged hiring, producing leaner organizations with clearer unit-level accountability.", metric: "RUNWAY +7 MONTHS", geography: "SAN FRANCISCO" },
-            { category: "Entrepreneurship", title: "Micro-Vertical Startups Capture Niche Demand", summary: "Specialist ventures are outperforming broad platforms in select categories by combining focused products with domain-native distribution loops.", metric: "RETENTION INDEX 8.9", geography: "LONDON" },
-            { category: "Finance", title: "Credit Markets Reward Cash-Flow Certainty", summary: "Lenders are offering improved terms to issuers with transparent earnings quality, while cyclical borrowers face elevated scrutiny on forward guidance.", metric: "SPREAD TIGHTENING 42 BPS", geography: "CHICAGO" },
-            { category: "Finance", title: "Treasury Teams Rebalance Duration Exposure", summary: "Corporate treasury desks are rotating into layered maturity ladders to stabilize liquidity while preserving optionality against policy volatility.", metric: "LIQUIDITY COVER 1.6x", geography: "TOKYO" },
-            { category: "Economics", title: "Services Activity Offsets Manufacturing Softness", summary: "Economic momentum remains uneven, with consumer-facing services supporting topline demand even as industrial output experiences selective cooling.", metric: "SERVICES PMI 53.4", geography: "GLOBAL" },
-            { category: "Economics", title: "Labor Reallocation Signals Productivity Upside", summary: "Workforce migration toward digital and analytical roles is creating near-term transition costs but a stronger medium-term productivity profile.", metric: "PRODUCTIVITY +1.8%", geography: "WASHINGTON" },
-            { category: "Corporate Innovation", title: "AI Governance Moves from Policy to Practice", summary: "Enterprises are operationalizing model risk controls through approval checkpoints, audit trails, and measurable impact frameworks tied to business outcomes.", metric: "DEPLOYMENT CYCLE -28%", geography: "SINGAPORE" },
-            { category: "Corporate Innovation", title: "Automation Budgets Shift to Workflow Orchestration", summary: "Technology investment is consolidating around integrated orchestration layers that reduce handoffs and compress decision latency across functions.", metric: "PROCESS TIME -34%", geography: "BERLIN" },
-            { category: "Leadership", title: "Executive Teams Adopt Scenario-Led Operating Cadence", summary: "Leadership groups are institutionalizing quarterly scenario drills to align risk posture, strategic pivots, and communication protocols.", metric: "STRATEGY CONFIDENCE +19%", geography: "GLOBAL" },
-            { category: "Leadership", title: "Performance Culture Centers on Decision Transparency", summary: "Organizations with explicit decision logs and accountability rituals report improved cross-functional trust and faster execution at scale.", metric: "EXECUTION VELOCITY +22%", geography: "TORONTO" },
-            { category: "Marketing", title: "Brand Spend Favors Measurable Narrative Systems", summary: "CMOs are integrating creative and analytics into unified narrative systems that improve attribution confidence without sacrificing brand distinctiveness.", metric: "CAC -11%", geography: "LOS ANGELES" },
-            { category: "Marketing", title: "B2B Demand Programs Prioritize Intent Precision", summary: "Teams are tightening funnel design around high-intent segments, reducing noise and improving conversion consistency in extended buying cycles.", metric: "SQL RATE +17%", geography: "DUBLIN" },
-            { category: "Future Enterprises", title: "Distributed Operating Models Mature Beyond Experiment", summary: "Hybrid-first enterprises are standardizing asynchronous workflows, enabling broader talent access while improving continuity across time zones.", metric: "OUTPUT PER FTE +13%", geography: "GLOBAL" },
-            { category: "Future Enterprises", title: "Sustainable Infrastructure Becomes Strategic Constraint", summary: "Energy-aware compute and logistics planning are moving into core strategy as firms model environmental constraints into long-range capex roadmaps.", metric: "ENERGY INTENSITY -9%", geography: "SHANGHAI" }
+            { category: "Business", title: "Global Conglomerates Reprice Operating Playbooks", summary: "Boardrooms are redirecting capital from pure expansion to resilience architecture, prioritizing optionality and supply continuity across continents.", metric: "VALUATION UP 14%", geography: "GLOBAL" },
+            { category: "Business", title: "Middle-Market Rollups Enter Precision Phase", summary: "Acquirers are shifting from scale-at-all-costs strategies to integration discipline, with diligence now centered on process interoperability and AI readiness.", metric: "$4.2B M&A", geography: "NEW YORK" },
+            { category: "Entrepreneurship", title: "Founder-Led Firms Extend Cash Runway Horizons", summary: "Early-stage operators are normalizing scenario-based planning and staged hiring, producing stronger survival odds through volatility cycles.", metric: "RUNWAY +9 MO", geography: "LONDON" },
+            { category: "Entrepreneurship", title: "Micro-Vertical Startups Capture Niche Demand", summary: "Specialist ventures are outperforming broad platforms in select categories by combining deep domain expertise with defensible customer intimacy.", metric: "RETENTION 87%", geography: "TOKYO" },
+            { category: "Finance", title: "Credit Markets Reward Cash-Flow Certainty", summary: "Lenders are offering improved terms to issuers with transparent earnings quality, while cyclical balance sheets face widening scrutiny.", metric: "SPREAD -42 BPS", geography: "GLOBAL" },
+            { category: "Finance", title: "Treasury Teams Rebalance Duration Exposure", summary: "Corporate treasury desks are rotating into layered maturity ladders to stabilize liquidity while preserving flexibility amid uncertain rate paths.", metric: "YIELD 5.1%", geography: "SHANGHAI" },
+            { category: "Economics", title: "Services Activity Offsets Manufacturing Softness", summary: "Economic momentum remains uneven, with consumer-facing services supporting topline demand while industrial indicators stay range-bound.", metric: "PMI 52.4", geography: "GLOBAL" },
+            { category: "Economics", title: "Labor Reallocation Signals Productivity Upside", summary: "Workforce migration toward digital and analytical roles is creating near-term transition costs and medium-term output gains.", metric: "OUTPUT +2.1%", geography: "NEW YORK" },
+            { category: "Corporate Innovation", title: "AI Governance Moves from Policy to Practice", summary: "Enterprises are operationalizing model risk controls through approval checkpoints, red-team cycles, and documented accountability chains.", metric: "RISK INDEX 9.4", geography: "GLOBAL" },
+            { category: "Corporate Innovation", title: "Automation Budgets Shift to Workflow Orchestration", summary: "Technology investment is consolidating around integrated orchestration layers that eliminate fragmented automation across departments.", metric: "COST -18%", geography: "LONDON" },
+            { category: "Leadership", title: "Executive Teams Adopt Scenario-Led Operating Cadence", summary: "Leadership groups are institutionalizing quarterly scenario drills to align risk posture with investment choices and execution velocity.", metric: "EXEC ALIGN 91%", geography: "TOKYO" },
+            { category: "Leadership", title: "Performance Culture Centers on Decision Transparency", summary: "Organizations with explicit decision logs and accountability rituals report improved cross-functional trust and faster cycle times.", metric: "CYCLE -23%", geography: "GLOBAL" },
+            { category: "Marketing", title: "Brand Spend Favors Measurable Narrative Systems", summary: "CMOs are integrating creative and analytics into unified narrative systems that improve attribution confidence and campaign adaptability.", metric: "ROAS +31%", geography: "NEW YORK" },
+            { category: "Marketing", title: "B2B Demand Programs Prioritize Intent Precision", summary: "Teams are tightening funnel design around high-intent segments, reducing noise and improving qualified pipeline conversion.", metric: "SQL +27%", geography: "SHANGHAI" },
+            { category: "Future Enterprises", title: "Distributed Operating Models Mature Beyond Experiment", summary: "Hybrid-first enterprises are standardizing asynchronous workflows, enabling talent mobility without sacrificing execution control.", metric: "OUTPUT +19%", geography: "GLOBAL" },
+            { category: "Future Enterprises", title: "Sustainable Infrastructure Becomes Strategic Constraint", summary: "Energy-aware compute and logistics planning are moving into core strategy as efficiency and climate compliance converge.", metric: "EMISSIONS -22%", geography: "GLOBAL" }
         ];
+
+        const PDF_PAGE_TOTAL = 12; // 1 cover + 11 pages
+        const UNSPLASH_ACCESS_KEY = localStorage.getItem('unsplash_access_key') || '';
+        let latestArticles = [];
 
         document.addEventListener("DOMContentLoaded", () => {
             initializeLayoutBadges();
@@ -152,6 +160,7 @@
             document.getElementById('config-btn').addEventListener('click', () => toggleSetupOverlay(true));
             document.getElementById('close-modal-btn').addEventListener('click', () => toggleSetupOverlay(false));
             document.getElementById('save-key-btn').addEventListener('click', saveConfiguredToken);
+            document.getElementById('pdf-btn').addEventListener('click', generateMagazinePdf);
         }
 
         function toggleSetupOverlay(shouldShow) {
@@ -181,7 +190,9 @@
             const currentSystemDateString = new Date().toDateString();
 
             if (storedCache && validationStamp === currentSystemDateString) {
-                renderDynamicMagazineCards(JSON.parse(storedCache));
+                const parsed = JSON.parse(storedCache);
+                latestArticles = parsed;
+                renderDynamicMagazineCards(parsed);
             } else {
                 invokeAutonomousAgentSync();
             }
@@ -197,9 +208,9 @@
             renderPulsePlaceholders();
 
             const synthesisPrompt = `You are an elite editorial economic editor compiling a layout for a premium, high-fashion stylized business journal. Today's date context is ${new Date().toDateString()}.
-            Generate exactly 16 ultra-premium executive industry briefings. 
+            Generate exactly 16 ultra-premium executive industry briefings.
             Provide exactly 2 discrete articles for each of these 8 exact tracks: ${CATEGORIES.join(', ')}.
-            
+
             Return the content output strictly as a raw minified valid JSON array string. No markdown frames, no backticks, no wrap text. Schema format:
             [
               {
@@ -214,7 +225,7 @@
             try {
                 const networkRequest = await fetch(GROQ_API_ENDPOINT, {
                     method: 'POST',
-                    headers: { 
+                    headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${internalToken}`
                     },
@@ -229,11 +240,10 @@
                 });
 
                 if (!networkRequest.ok) throw new Error('API Sync Execution Aborted');
-                
+
                 const responseData = await networkRequest.json();
                 let sanitizedJsonText = responseData.choices[0].message.content.trim();
-                
-                // Handle potential object wrapping if Groq nests the array inside an implicit parent object
+
                 let validatedPayload = JSON.parse(sanitizedJsonText);
                 if (!Array.isArray(validatedPayload) && validatedPayload.articles) {
                     validatedPayload = validatedPayload.articles;
@@ -245,10 +255,11 @@
                 if (!Array.isArray(validatedPayload) || validatedPayload.length === 0) {
                     throw new Error('API returned an invalid or empty payload.');
                 }
-                
+
+                latestArticles = validatedPayload;
                 localStorage.setItem('cached_vogue_payload', JSON.stringify(validatedPayload));
                 localStorage.setItem('cached_vogue_date', new Date().toDateString());
-                
+
                 renderDynamicMagazineCards(validatedPayload);
             } catch (networkError) {
                 console.error(networkError);
@@ -259,6 +270,7 @@
         function useDummyPortfolio(reason = "Fallback to dummy data.") {
             console.warn(reason);
             const payload = DUMMY_ARTICLES.slice();
+            latestArticles = payload;
             localStorage.setItem('cached_vogue_payload', JSON.stringify(payload));
             localStorage.setItem('cached_vogue_date', new Date().toDateString());
             renderDynamicMagazineCards(payload);
@@ -266,7 +278,7 @@
 
         function renderDynamicMagazineCards(articlesArray) {
             const interfaceGrid = document.getElementById('magazine-grid');
-            interfaceGrid.innerHTML = ''; 
+            interfaceGrid.innerHTML = '';
 
             if (!Array.isArray(articlesArray)) {
                 displayExecutionErrorState();
@@ -278,20 +290,20 @@
                 const searchHyperlink = `https://www.google.com/search?q=${searchIntelQuery}`;
 
                 interfaceGrid.innerHTML += `
-                    <a href="${searchHyperlink}" target="_blank" rel="noopener noreferrer" class="vogue-card block p-6 relative flex flex-col justify-between group cursor-pointer border-t-[3px] border-white/20 hover:border-white/70">
+                    <a href="${searchHyperlink}" target="_blank" rel="noopener noreferrer" class="vogue-card block p-6 relative flex flex-col justify-between group cursor-pointer border-t-[3px] border-transparent hover:border-white/60 min-h-[330px]">
                         <div>
                             <div class="flex justify-between items-center mb-6">
                                 <span class="text-[9px] font-bold tracking-[0.25em] text-gray-400 uppercase">${article.category}</span>
                                 <span class="text-[9px] font-light tracking-widest text-zinc-500 uppercase">${article.geography}</span>
                             </div>
-                            
+
                             <h2 class="text-xl font-serif font-semibold text-white tracking-wide leading-tight mb-4 group-hover:text-zinc-300 transition-colors relative inline-block">
                                 <span class="hover-line relative">${article.title}</span>
                             </h2>
-                            
+
                             <p class="text-xs text-zinc-400 font-light leading-relaxed mb-8 tracking-wide text-justify">${article.summary}</p>
                         </div>
-                        
+
                         <div class="pt-4 border-t border-white/5 flex justify-between items-center mt-auto">
                             <span class="text-[9px] font-medium tracking-[0.2em] text-white/60 uppercase font-sans">${article.metric}</span>
                             <span class="text-[9px] font-semibold tracking-widest uppercase text-zinc-400 group-hover:text-white transition-colors duration-300 flex items-center gap-1.5">
@@ -324,20 +336,199 @@
             }
         }
 
-        function displayMissingConfigurationState() {
-            document.getElementById('magazine-grid').innerHTML = `
-                <div class="col-span-full py-32 text-center border border-dashed border-zinc-800">
-                    <p class="text-xs font-light tracking-[0.3em] text-zinc-400 uppercase">AUTHENTICATION REQUIRED // PROVISION GROQ ENGINE TO COMPILE PORTFOLIO</p>
-                </div>
-            `;
-        }
-
         function displayExecutionErrorState() {
             document.getElementById('magazine-grid').innerHTML = `
                 <div class="col-span-full py-32 text-center border border-dashed border-red-900/30">
                     <p class="text-xs font-light tracking-[0.2em] text-red-400 uppercase">VERIFICATION ROUTINE INTERRUPTED // CONFIRM EXPERIMENTAL TOKEN INTEGRITY</p>
                 </div>
             `;
+        }
+
+        async function generateMagazinePdf() {
+            const btn = document.getElementById('pdf-btn');
+            const original = btn.innerHTML;
+            try {
+                if (!latestArticles || !latestArticles.length) {
+                    throw new Error('No article data available yet. Please wait for data loading.');
+                }
+
+                btn.disabled = true;
+                btn.innerHTML = '<span>Generating PDF...</span><span class="text-xs">⏳</span>';
+
+                const { jsPDF } = await import('https://cdn.jsdelivr.net/npm/jspdf@2.5.1/+esm');
+                const pdf = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
+
+                const pageWidth = pdf.internal.pageSize.getWidth();
+                const pageHeight = pdf.internal.pageSize.getHeight();
+                const margin = 48;
+
+                const coverImage = await fetchAbstractImage('black white abstract business magazine cover');
+                await drawCoverPage(pdf, coverImage, pageWidth, pageHeight, margin);
+
+                const pagesNeeded = PDF_PAGE_TOTAL - 1; // 11 additional pages
+                for (let p = 0; p < pagesNeeded; p++) {
+                    pdf.addPage();
+                    const pageArticles = latestArticles.slice(p * 2, p * 2 + 2);
+                    const image1 = await fetchAbstractImage(`black and white abstract ${pageArticles[0]?.category || 'business'} texture`);
+                    const image2 = await fetchAbstractImage(`black and white abstract ${pageArticles[1]?.category || 'business'} pattern`);
+                    await drawContentPage(pdf, p + 2, pageArticles, [image1, image2], pageWidth, pageHeight, margin);
+                }
+
+                const filenameDate = new Date().toISOString().slice(0, 10);
+                pdf.save(`consolidate-business-magazine-${filenameDate}.pdf`);
+            } catch (error) {
+                console.error(error);
+                alert(`PDF generation failed: ${error.message}`);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = original;
+            }
+        }
+
+        async function fetchAbstractImage(query) {
+            try {
+                if (UNSPLASH_ACCESS_KEY) {
+                    const endpoint = `https://api.unsplash.com/photos/random?orientation=landscape&query=${encodeURIComponent(query)}&content_filter=high&color=black_and_white&client_id=${UNSPLASH_ACCESS_KEY}`;
+                    const response = await fetch(endpoint);
+                    if (response.ok) {
+                        const data = await response.json();
+                        return data?.urls?.regular || buildUnsplashSourceFallback(query);
+                    }
+                }
+            } catch (e) {
+                console.warn('Unsplash API unavailable, using source fallback.', e);
+            }
+            return buildUnsplashSourceFallback(query);
+        }
+
+        function buildUnsplashSourceFallback(query) {
+            return `https://source.unsplash.com/1600x900/?${encodeURIComponent(query + ',monochrome,abstract')}`;
+        }
+
+        async function imageUrlToDataUrl(url) {
+            try {
+                const response = await fetch(url, { mode: 'cors' });
+                const blob = await response.blob();
+                return await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
+                });
+            } catch {
+                return null;
+            }
+        }
+
+        async function drawCoverPage(pdf, imageUrl, pageWidth, pageHeight, margin) {
+            const imgData = await imageUrlToDataUrl(imageUrl);
+
+            pdf.setFillColor(0, 0, 0);
+            pdf.rect(0, 0, pageWidth, pageHeight, 'F');
+
+            if (imgData) {
+                pdf.addImage(imgData, 'JPEG', 0, 0, pageWidth, pageHeight);
+                pdf.setFillColor(0, 0, 0);
+                pdf.setGState(new pdf.GState({ opacity: 0.58 }));
+                pdf.rect(0, 0, pageWidth, pageHeight, 'F');
+                pdf.setGState(new pdf.GState({ opacity: 1 }));
+            }
+
+            pdf.setTextColor(255, 255, 255);
+            pdf.setFont('helvetica', 'normal');
+            pdf.setFontSize(11);
+            pdf.text('GLOBAL CORPORATE INTELLIGENCE BRIEFING', margin, 70);
+
+            pdf.setFont('times', 'bold');
+            pdf.setFontSize(54);
+            pdf.text('CONSOLIDATE', margin, 145);
+
+            pdf.setFont('times', 'italic');
+            pdf.setFontSize(18);
+            pdf.text('The Business Magazine', margin, 175);
+
+            pdf.setDrawColor(255, 255, 255);
+            pdf.setLineWidth(0.7);
+            pdf.line(margin, 198, pageWidth - margin, 198);
+
+            const dateText = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            pdf.setFont('helvetica', 'normal');
+            pdf.setFontSize(12);
+            pdf.text(`Issue Date: ${dateText}`, margin, pageHeight - 80);
+            pdf.text('Edition: Executive Abstract No. 01', margin, pageHeight - 60);
+        }
+
+        async function drawContentPage(pdf, pageNumber, pageArticles, images, pageWidth, pageHeight, margin) {
+            pdf.setFillColor(245, 245, 245);
+            pdf.rect(0, 0, pageWidth, pageHeight, 'F');
+
+            pdf.setTextColor(10, 10, 10);
+            pdf.setFont('times', 'bold');
+            pdf.setFontSize(20);
+            pdf.text(`Business Briefings // Page ${pageNumber}`, margin, 52);
+
+            pdf.setDrawColor(30, 30, 30);
+            pdf.setLineWidth(0.5);
+            pdf.line(margin, 62, pageWidth - margin, 62);
+
+            const blockTopStart = 85;
+            const blockHeight = (pageHeight - blockTopStart - margin - 35) / 2;
+
+            for (let i = 0; i < 2; i++) {
+                const article = pageArticles[i] || {
+                    category: 'Editorial',
+                    title: 'Additional Section',
+                    summary: 'Reserved for additional premium business analysis content.',
+                    metric: 'N/A',
+                    geography: 'GLOBAL'
+                };
+                const top = blockTopStart + i * blockHeight;
+
+                const imgData = await imageUrlToDataUrl(images[i]);
+                const imageX = margin;
+                const imageY = top;
+                const imageW = 180;
+                const imageH = blockHeight - 20;
+
+                if (imgData) {
+                    pdf.addImage(imgData, 'JPEG', imageX, imageY, imageW, imageH);
+                } else {
+                    pdf.setFillColor(220, 220, 220);
+                    pdf.rect(imageX, imageY, imageW, imageH, 'F');
+                }
+
+                const textX = imageX + imageW + 18;
+                const textW = pageWidth - margin - textX;
+
+                pdf.setFont('helvetica', 'bold');
+                pdf.setFontSize(10);
+                pdf.text((article.category || 'BUSINESS').toUpperCase(), textX, top + 14);
+
+                pdf.setFont('times', 'bold');
+                pdf.setFontSize(17);
+                const titleLines = pdf.splitTextToSize(article.title || 'Untitled', textW);
+                pdf.text(titleLines, textX, top + 36);
+
+                const titleHeight = Math.min(titleLines.length, 3) * 19;
+                pdf.setFont('helvetica', 'normal');
+                pdf.setFontSize(11);
+                const summaryLines = pdf.splitTextToSize(article.summary || '', textW);
+                const clippedSummary = summaryLines.slice(0, 9);
+                pdf.text(clippedSummary, textX, top + 36 + titleHeight);
+
+                pdf.setFont('helvetica', 'bold');
+                pdf.setFontSize(10);
+                pdf.text(`METRIC: ${article.metric || 'N/A'}`, textX, top + blockHeight - 26);
+                pdf.text(`REGION: ${article.geography || 'GLOBAL'}`, textX, top + blockHeight - 12);
+
+                pdf.setDrawColor(180, 180, 180);
+                pdf.line(margin, top + blockHeight, pageWidth - margin, top + blockHeight);
+            }
+
+            pdf.setFont('helvetica', 'normal');
+            pdf.setFontSize(9);
+            pdf.setTextColor(60, 60, 60);
+            pdf.text('Images sourced from Unsplash (abstract black-and-white)', margin, pageHeight - 16);
         }
     </script>
 </body>
