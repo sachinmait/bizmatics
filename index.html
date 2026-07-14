@@ -82,7 +82,7 @@
                 <div id="date-badge" class="text-[10px] font-medium tracking-[0.2em] text-gray-400 font-sans border-r border-white/20 pr-6 uppercase">
                     LOADING PORTFOLIO...
                 </div>
-                <button id="config-btn" class="text-[10px] font-semibold tracking-[0.2em] uppercase text-white hover:text-gray-400 transition duration-300 flex items-center gap-2" title="Configure API key">
+                <button id="config-btn" class="text-[10px] font-semibold tracking-[0.2em] uppercase text-white hover:text-gray-400 transition duration-300 flex items-center gap-2" title="Configure Groq API Token">
                     <span>Groq Settings</span>
                     <span class="text-xs">⚙️</span>
                 </button>
@@ -101,8 +101,8 @@
     <div id="setup-modal" class="fixed inset-0 bg-black/90 backdrop-blur-lg hidden flex items-center justify-center p-4 z-50">
         <div class="bg-vogueBlack rounded-none max-w-md w-full p-8 border border-white/20 shadow-2xl">
             <h3 class="text-xl font-serif tracking-wider mb-2 text-white text-center">Groq API Profile</h3>
-            <p class="text-xs text-gray-400 mb-6 leading-relaxed text-center font-light">Enter your private Groq authorization token. The structural layer executes calculations exclusively in memory storage.</p>
-            <input type="password" id="api-key-input" placeholder="gsk_..." class="w-full p-3 rounded-none bg-zinc-900 border border-white/10 text-white font-mono tracking-widest focus:outline-none focus:border-white mb-6 text-xs text-center uppercase">
+            <p class="text-xs text-gray-400 mb-6 leading-relaxed text-center font-light">Enter your private Groq authorization token. If unavailable or invalid, we will render a curated dummy portfolio.</p>
+            <input type="password" id="api-key-input" placeholder="gsk_..." class="w-full p-3 rounded-none bg-zinc-900 border border-white/10 text-white font-mono tracking-widest focus:outline-none focus:border-white/40 mb-6 text-sm">
             <div class="flex justify-center gap-4">
                 <button id="close-modal-btn" class="px-6 py-2.5 text-xs tracking-widest uppercase text-gray-400 hover:text-white transition font-light">Discard</button>
                 <button id="save-key-btn" class="px-6 py-2.5 bg-white text-black hover:bg-zinc-200 text-xs tracking-widest uppercase font-semibold transition">Authenticate</button>
@@ -116,6 +116,25 @@
         const CATEGORIES = [
             "Business", "Entrepreneurship", "Finance", "Economics", 
             "Corporate Innovation", "Leadership", "Marketing", "Future Enterprises"
+        ];
+
+        const DUMMY_ARTICLES = [
+            { category: "Business", title: "Global Conglomerates Reprice Operating Playbooks", summary: "Boardrooms are redirecting capital from pure expansion to resilience architecture, prioritizing supply optionality and margin durability over short-cycle headline growth.", metric: "OPERATING MARGIN +2.1%", geography: "GLOBAL" },
+            { category: "Business", title: "Middle-Market Rollups Enter Precision Phase", summary: "Acquirers are shifting from scale-at-all-costs strategies to integration discipline, with diligence weighted toward data quality, retention economics, and execution velocity.", metric: "$3.8B DEAL PIPELINE", geography: "NEW YORK" },
+            { category: "Entrepreneurship", title: "Founder-Led Firms Extend Cash Runway Horizons", summary: "Early-stage operators are normalizing scenario-based planning and staged hiring, producing leaner organizations with clearer unit-level accountability.", metric: "RUNWAY +7 MONTHS", geography: "SAN FRANCISCO" },
+            { category: "Entrepreneurship", title: "Micro-Vertical Startups Capture Niche Demand", summary: "Specialist ventures are outperforming broad platforms in select categories by combining focused products with domain-native distribution loops.", metric: "RETENTION INDEX 8.9", geography: "LONDON" },
+            { category: "Finance", title: "Credit Markets Reward Cash-Flow Certainty", summary: "Lenders are offering improved terms to issuers with transparent earnings quality, while cyclical borrowers face elevated scrutiny on forward guidance.", metric: "SPREAD TIGHTENING 42 BPS", geography: "CHICAGO" },
+            { category: "Finance", title: "Treasury Teams Rebalance Duration Exposure", summary: "Corporate treasury desks are rotating into layered maturity ladders to stabilize liquidity while preserving optionality against policy volatility.", metric: "LIQUIDITY COVER 1.6x", geography: "TOKYO" },
+            { category: "Economics", title: "Services Activity Offsets Manufacturing Softness", summary: "Economic momentum remains uneven, with consumer-facing services supporting topline demand even as industrial output experiences selective cooling.", metric: "SERVICES PMI 53.4", geography: "GLOBAL" },
+            { category: "Economics", title: "Labor Reallocation Signals Productivity Upside", summary: "Workforce migration toward digital and analytical roles is creating near-term transition costs but a stronger medium-term productivity profile.", metric: "PRODUCTIVITY +1.8%", geography: "WASHINGTON" },
+            { category: "Corporate Innovation", title: "AI Governance Moves from Policy to Practice", summary: "Enterprises are operationalizing model risk controls through approval checkpoints, audit trails, and measurable impact frameworks tied to business outcomes.", metric: "DEPLOYMENT CYCLE -28%", geography: "SINGAPORE" },
+            { category: "Corporate Innovation", title: "Automation Budgets Shift to Workflow Orchestration", summary: "Technology investment is consolidating around integrated orchestration layers that reduce handoffs and compress decision latency across functions.", metric: "PROCESS TIME -34%", geography: "BERLIN" },
+            { category: "Leadership", title: "Executive Teams Adopt Scenario-Led Operating Cadence", summary: "Leadership groups are institutionalizing quarterly scenario drills to align risk posture, strategic pivots, and communication protocols.", metric: "STRATEGY CONFIDENCE +19%", geography: "GLOBAL" },
+            { category: "Leadership", title: "Performance Culture Centers on Decision Transparency", summary: "Organizations with explicit decision logs and accountability rituals report improved cross-functional trust and faster execution at scale.", metric: "EXECUTION VELOCITY +22%", geography: "TORONTO" },
+            { category: "Marketing", title: "Brand Spend Favors Measurable Narrative Systems", summary: "CMOs are integrating creative and analytics into unified narrative systems that improve attribution confidence without sacrificing brand distinctiveness.", metric: "CAC -11%", geography: "LOS ANGELES" },
+            { category: "Marketing", title: "B2B Demand Programs Prioritize Intent Precision", summary: "Teams are tightening funnel design around high-intent segments, reducing noise and improving conversion consistency in extended buying cycles.", metric: "SQL RATE +17%", geography: "DUBLIN" },
+            { category: "Future Enterprises", title: "Distributed Operating Models Mature Beyond Experiment", summary: "Hybrid-first enterprises are standardizing asynchronous workflows, enabling broader talent access while improving continuity across time zones.", metric: "OUTPUT PER FTE +13%", geography: "GLOBAL" },
+            { category: "Future Enterprises", title: "Sustainable Infrastructure Becomes Strategic Constraint", summary: "Energy-aware compute and logistics planning are moving into core strategy as firms model environmental constraints into long-range capex roadmaps.", metric: "ENERGY INTENSITY -9%", geography: "SHANGHAI" }
         ];
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -171,8 +190,7 @@
         async function invokeAutonomousAgentSync() {
             const internalToken = localStorage.getItem('groq_magazine_key');
             if (!internalToken) {
-                displayMissingConfigurationState();
-                toggleSetupOverlay(true);
+                useDummyPortfolio("Missing API key. Rendering dummy data.");
                 return;
             }
 
@@ -223,6 +241,10 @@
                     const fallbackValue = Object.values(validatedPayload)[0];
                     if (Array.isArray(fallbackValue)) validatedPayload = fallbackValue;
                 }
+
+                if (!Array.isArray(validatedPayload) || validatedPayload.length === 0) {
+                    throw new Error('API returned an invalid or empty payload.');
+                }
                 
                 localStorage.setItem('cached_vogue_payload', JSON.stringify(validatedPayload));
                 localStorage.setItem('cached_vogue_date', new Date().toDateString());
@@ -230,8 +252,16 @@
                 renderDynamicMagazineCards(validatedPayload);
             } catch (networkError) {
                 console.error(networkError);
-                displayExecutionErrorState();
+                useDummyPortfolio("API call failed. Rendering dummy data.");
             }
+        }
+
+        function useDummyPortfolio(reason = "Fallback to dummy data.") {
+            console.warn(reason);
+            const payload = DUMMY_ARTICLES.slice();
+            localStorage.setItem('cached_vogue_payload', JSON.stringify(payload));
+            localStorage.setItem('cached_vogue_date', new Date().toDateString());
+            renderDynamicMagazineCards(payload);
         }
 
         function renderDynamicMagazineCards(articlesArray) {
@@ -248,7 +278,7 @@
                 const searchHyperlink = `https://www.google.com/search?q=${searchIntelQuery}`;
 
                 interfaceGrid.innerHTML += `
-                    <a href="${searchHyperlink}" target="_blank" rel="noopener noreferrer" class="vogue-card block p-6 relative flex flex-col justify-between group cursor-pointer border-t-[3px] border-white/10 hover:border-vogueGold h-72">
+                    <a href="${searchHyperlink}" target="_blank" rel="noopener noreferrer" class="vogue-card block p-6 relative flex flex-col justify-between group cursor-pointer border-t-[3px] border-white/20 hover:border-white/70">
                         <div>
                             <div class="flex justify-between items-center mb-6">
                                 <span class="text-[9px] font-bold tracking-[0.25em] text-gray-400 uppercase">${article.category}</span>
