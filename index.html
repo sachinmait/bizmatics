@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CONSOLIDATE // The E-Business Portfolio</title>
+    <!-- Tailwind CSS Engine -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['Playfair Display', 'Didot', 'Georgia', 'serif'],
+                        sans: ['Montserrat', 'Inter', 'sans-serif']
+                    },
+                    colors: {
+                        vogueBlack: '#0a0a0a',
+                        vogueGold: '#d4af37'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0a0a0a;
+            color: #f5f5f5;
+            min-height: 100vh;
+            letter-spacing: 0.03em;
+        }
+        /* Refined Editorial Glassmorphism */
+        .editorial-panel {
+            background: rgba(18, 18, 18, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .vogue-card {
+            background: rgba(20, 20, 20, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .vogue-card:hover {
+            background: rgba(255, 255, 255, 0.02);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+        }
+        /* Custom dynamic underlining */
+        .hover-line::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            transform: scaleX(0);
+            height: 1px;
+            bottom: -2px;
+            left: 0;
+            background-color: #ffffff;
+            transform-origin: bottom right;
+            transition: transform 0.4s ease-out;
+        }
+        .vogue-card:hover .hover-line::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+    </style>
+    <!-- Premium Font Integration -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+</head>
+<body class="font-sans antialiased">
+
+    <!-- Top Editorial Masthead & Navigation -->
+    <header class="editorial-panel sticky top-0 z-40 w-full tracking-wider">
+        <div class="max-w-7xl mx-auto px-6 py-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="text-center sm:text-left">
+                <p class="text-[9px] font-semibold tracking-[0.4em] text-gray-400 uppercase mb-1">GLOBAL CORPORATE INTELLIGENCE BRIEFING</p>
+                <h1 class="text-3xl font-serif tracking-[0.15em] font-bold text-white">CONSOLIDATE</h1>
+            </div>
+            <div class="flex items-center gap-6">
+                <div id="date-badge" class="text-[10px] font-medium tracking-[0.2em] text-gray-400 font-sans border-r border-white/20 pr-6 uppercase">
+                    LOADING PORTFOLIO...
+                </div>
+                <button id="config-btn" class="text-[10px] font-semibold tracking-[0.2em] uppercase text-white hover:text-gray-400 transition duration-300 flex items-center gap-2" title="Configure System Protocol">
+                    <span>Credentials</span>
+                    <span class="text-xs">⚙️</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dynamic Layout Canvas -->
+    <main class="max-w-7xl mx-auto px-6 py-12">
+        <div id="magazine-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12">
+            <!-- Dynamic Injection Slot (16 Vogue-style Interactive Cards) -->
+        </div>
+    </main>
+
+    <!-- Configuration Modal Interface -->
+    <div id="setup-modal" class="fixed inset-0 bg-black/90 backdrop-blur-lg hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-vogueBlack rounded-none max-w-md w-full p-8 border border-white/20 shadow-2xl">
+            <h3 class="text-xl font-serif tracking-wider mb-2 text-white text-center">Google AI Studio Profile</h3>
+            <p class="text-xs text-gray-400 mb-6 leading-relaxed text-center font-light">Enter your private verification token. The structural layer executes calculations exclusively in memory storage.</p>
+            <input type="password" id="api-key-input" placeholder="ENTER API KEY HERE" class="w-full p-3 rounded-none bg-zinc-900 border border-white/10 text-white font-mono tracking-widest focus:outline-none focus:border-white mb-6 text-xs text-center uppercase">
+            <div class="flex justify-center gap-4">
+                <button id="close-modal-btn" class="px-6 py-2.5 text-xs tracking-widest uppercase text-gray-400 hover:text-white transition font-light">Discard</button>
+                <button id="save-key-btn" class="px-6 py-2.5 bg-white text-black hover:bg-zinc-200 text-xs tracking-widest uppercase font-semibold transition">Authenticate</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Architecture Core Script -->
+    <script>
+        const AI_STUDIO_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+        const CATEGORIES = [
+            "Business", "Entrepreneurship", "Finance", "Economics", 
+            "Corporate Innovation", "Leadership", "Marketing", "Future Enterprises"
+        ];
+
+        document.addEventListener("DOMContentLoaded", () => {
+            initializeLayoutBadges();
+            bindEventTriggers();
+            evaluateBriefingLifecycle();
+        });
+
+        function initializeLayoutBadges() {
+            const timeFormattingOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('date-badge').innerText = new Date().toLocaleDateString('en-US', timeFormattingOptions).toUpperCase();
+        }
+
+        function bindEventTriggers() {
+            document.getElementById('config-btn').addEventListener('click', () => toggleSetupOverlay(true));
+            document.getElementById('close-modal-btn').addEventListener('click', () => toggleSetupOverlay(false));
+            document.getElementById('save-key-btn').addEventListener('click', saveConfiguredToken);
+        }
+
+        function toggleSetupOverlay(shouldShow) {
+            const modalElement = document.getElementById('setup-modal');
+            if (shouldShow) {
+                modalElement.classList.remove('hidden');
+                const existingKey = localStorage.getItem('gemini_vogue_key');
+                if (existingKey) document.getElementById('api-key-input').value = existingKey;
+            } else {
+                modalElement.classList.add('hidden');
+            }
+        }
+
+        function saveConfiguredToken() {
+            const tokenInput = document.getElementById('api-key-input').value.trim();
+            if (tokenInput) {
+                localStorage.setItem('gemini_vogue_key', tokenInput);
+                localStorage.removeItem('cached_vogue_payload'); // Evict data caches
+                toggleSetupOverlay(false);
+                evaluateBriefingLifecycle();
+            }
+        }
+
+        function evaluateBriefingLifecycle() {
+            const storedCache = localStorage.getItem('cached_vogue_payload');
+            const validationStamp = localStorage.getItem('cached_vogue_date');
+            const currentSystemDateString = new Date().toDateString();
+
+            if (storedCache && validationStamp === currentSystemDateString) {
+                renderDynamicMagazineCards(JSON.parse(storedCache));
+            } else {
+                invokeAutonomousAgentSync();
+            }
+        }
+
+        async function invokeAutonomousAgentSync() {
+            const internalToken = localStorage.getItem('gemini_vogue_key');
+            if (!internalToken) {
+                displayMissingConfigurationState();
+                toggleSetupOverlay(true);
+                return;
+            }
+
+            renderPulsePlaceholders();
+
+            const synthesisPrompt = `You are an elite editorial economic editor compiling a layout for a premium, high-fashion stylized business journal. Today's date context is ${new Date().toDateString()}.
+            Generate exactly 16 ultra-premium executive industry briefings. 
+            Provide exactly 2 discrete articles for each of these 8 exact tracks: ${CATEGORIES.join(', ')}.
+            
+            Return the content output strictly as a valid plain flat JSON array string. No markdown frames. Schema format:
+            [
+              {
+                "category": "Category Name",
+                "title": "A Punchy, Elegant Headline",
+                "summary": "A sophisticated, high-level analysis written with narrative grace detailing the market force and systemic ripple effects.",
+                "metric": "Key statistical index (e.g., VALUATION UP 14%, $4.2B M&A, or SHIFT INDEX 9.4)",
+                "geography": "LONDON / NEW YORK / TOKYO / SHANGHAI / GLOBAL"
+              }
+            ]`;
+
+            try {
+                const networkRequest = await fetch(`${AI_STUDIO_ENDPOINT}?key=${internalToken}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: synthesisPrompt }] }],
+                        generationConfig: { responseMimeType: "application/json" }
+                    })
+                });
+
+                if (!networkRequest.ok) throw new Error('API Sync Execution Aborted');
+                
+                const responseData = await networkRequest.json();
+                const sanitizedJsonText = responseData.candidates[0].content.parts[0].text;
+                const validatedPayload = JSON.parse(sanitizedJsonText);
+                
+                localStorage.setItem('cached_vogue_payload', JSON.stringify(validatedPayload));
+                localStorage.setItem('cached_vogue_date', new Date().toDateString());
+                
+                renderDynamicMagazineCards(validatedPayload);
+            } catch (networkError) {
+                console.error(networkError);
+                displayExecutionErrorState();
+            }
+        }
+
+        function renderDynamicMagazineCards(articlesArray) {
+            const interfaceGrid = document.getElementById('magazine-grid');
+            interfaceGrid.innerHTML = ''; 
+
+            articlesArray.forEach(article => {
+                // Generate secure search telemetry route to make the item a fully functional deep intelligence hyperlink
+                const searchIntelQuery = encodeURIComponent(`${article.category} ${article.title}`);
+                const searchHyperlink = `https://www.google.com/search?q=${searchIntelQuery}`;
+
+                interfaceGrid.innerHTML += `
+                    <a href="${searchHyperlink}" target="_blank" rel="noopener noreferrer" class="vogue-card block p-6 relative flex flex-col justify-between group cursor-pointer border-t-[3px] border-t-transparent hover:border-t-white">
+                        <div>
+                            <div class="flex justify-between items-center mb-6">
+                                <span class="text-[9px] font-bold tracking-[0.25em] text-gray-400 uppercase">${article.category}</span>
+                                <span class="text-[9px] font-light tracking-widest text-zinc-500 uppercase">${article.geography}</span>
+                            </div>
+                            
+                            <h2 class="text-xl font-serif font-semibold text-white tracking-wide leading-tight mb-4 group-hover:text-zinc-300 transition-colors relative inline-block">
+                                <span class="hover-line relative">${article.title}</span>
+                            </h2>
+                            
+                            <p class="text-xs text-zinc-400 font-light leading-relaxed mb-8 tracking-wide text-justify">${article.summary}</p>
+                        </div>
+                        
+                        <div class="pt-4 border-t border-white/5 flex justify-between items-center mt-auto">
+                            <span class="text-[9px] font-medium tracking-[0.2em] text-white/60 uppercase font-sans">${article.metric}</span>
+                            <span class="text-[9px] font-semibold tracking-widest uppercase text-zinc-400 group-hover:text-white transition-colors duration-300 flex items-center gap-1.5">
+                                READ ANALYSIS <span class="text-xs transition-transform duration-300 group-hover:translate-x-1">→</span>
+                            </span>
+                        </div>
+                    </a>
+                `;
+            });
+        }
+
+        function renderPulsePlaceholders() {
+            const interfaceGrid = document.getElementById('magazine-grid');
+            interfaceGrid.innerHTML = '';
+            for (let idx = 0; idx < 16; idx++) {
+                interfaceGrid.innerHTML += `
+                    <div class="vogue-card p-6 h-72 animate-pulse flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-6">
+                                <div class="h-2 w-1/3 bg-zinc-800 rounded"></div>
+                                <div class="h-2 w-1/6 bg-zinc-900 rounded"></div>
+                            </div>
+                            <div class="h-5 w-5/6 bg-zinc-800 rounded mb-4"></div>
+                            <div class="h-2.5 w-full bg-zinc-900 rounded mb-2"></div>
+                            <div class="h-2.5 w-4/5 bg-zinc-900 rounded"></div>
+                        </div>
+                        <div class="h-2 w-1/4 bg-zinc-800 rounded"></div>
+                    </div>
+                `;
+            }
+        }
+
+        function displayMissingConfigurationState() {
+            document.getElementById('magazine-grid').innerHTML = `
+                <div class="col-span-full py-32 text-center border border-dashed border-zinc-800">
+                    <p class="text-xs font-light tracking-[0.3em] text-zinc-400 uppercase">AUTHENTICATION REQUIRED // PROVISION ENGINE TO COMPILE MAGAZINE PLATFORM</p>
+                </div>
+            `;
+        }
+
+        function displayExecutionErrorState() {
+            document.getElementById('magazine-grid').innerHTML = `
+                <div class="col-span-full py-32 text-center border border-dashed border-red-900/30">
+                    <p class="text-xs font-light tracking-[0.2em] text-red-400 uppercase">VERIFICATION ROUTINE INTERRUPTED // CONFIRM EXPERIMENTAL TOKEN INTEGRITY</p>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
