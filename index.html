@@ -82,7 +82,7 @@
                 <div id="date-badge" class="text-[10px] font-medium tracking-[0.2em] text-gray-400 font-sans border-r border-white/20 pr-6 uppercase">
                     LOADING PORTFOLIO...
                 </div>
-                <button id="config-btn" class="text-[10px] font-semibold tracking-[0.2em] uppercase text-white hover:text-gray-400 transition duration-300 flex items-center gap-2" title="Configure System Protocol">
+                <button id="config-btn" class="text-[10px] font-semibold tracking-[0.2em] uppercase text-white hover:text-gray-400 transition duration-300 flex items-center gap-2" title="Configure API key">
                     <span>Groq Settings</span>
                     <span class="text-xs">⚙️</span>
                 </button>
@@ -102,7 +102,7 @@
         <div class="bg-vogueBlack rounded-none max-w-md w-full p-8 border border-white/20 shadow-2xl">
             <h3 class="text-xl font-serif tracking-wider mb-2 text-white text-center">Groq API Profile</h3>
             <p class="text-xs text-gray-400 mb-6 leading-relaxed text-center font-light">Enter your private Groq authorization token. The structural layer executes calculations exclusively in memory storage.</p>
-            <input type="password" id="api-key-input" placeholder="gsk_..." class="w-full p-3 rounded-none bg-zinc-900 border border-white/10 text-white font-mono tracking-widest focus:outline-none focus:border-white mb-6 text-xs text-center">
+            <input type="password" id="api-key-input" placeholder="gsk_..." class="w-full p-3 rounded-none bg-zinc-900 border border-white/10 text-white font-mono tracking-widest focus:outline-none focus:border-white mb-6 text-xs text-center uppercase">
             <div class="flex justify-center gap-4">
                 <button id="close-modal-btn" class="px-6 py-2.5 text-xs tracking-widest uppercase text-gray-400 hover:text-white transition font-light">Discard</button>
                 <button id="save-key-btn" class="px-6 py-2.5 bg-white text-black hover:bg-zinc-200 text-xs tracking-widest uppercase font-semibold transition">Authenticate</button>
@@ -201,13 +201,12 @@
                         'Authorization': `Bearer ${internalToken}`
                     },
                     body: JSON.stringify({
-                        model: "llama-3.3-70b-specdec",
+                        model: "llama-3.1-8b-instant",
                         messages: [
                             { role: "system", content: "You output raw minified plain JSON string matching schemas exactly. No prose wrap, no markdown fences." },
                             { role: "user", content: synthesisPrompt }
                         ],
-                        temperature: 0.3,
-                        response_format: { type: "json_object" }
+                        temperature: 0.3
                     })
                 });
 
@@ -249,7 +248,7 @@
                 const searchHyperlink = `https://www.google.com/search?q=${searchIntelQuery}`;
 
                 interfaceGrid.innerHTML += `
-                    <a href="${searchHyperlink}" target="_blank" rel="noopener noreferrer" class="vogue-card block p-6 relative flex flex-col justify-between group cursor-pointer border-t-[3px] border-t-transparent hover:border-t-white">
+                    <a href="${searchHyperlink}" target="_blank" rel="noopener noreferrer" class="vogue-card block p-6 relative flex flex-col justify-between group cursor-pointer border-t-[3px] border-white/10 hover:border-vogueGold h-72">
                         <div>
                             <div class="flex justify-between items-center mb-6">
                                 <span class="text-[9px] font-bold tracking-[0.25em] text-gray-400 uppercase">${article.category}</span>
